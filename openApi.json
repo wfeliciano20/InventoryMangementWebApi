@@ -8,8 +8,12 @@
   },
   "servers": [
     {
-      "url": "https://inventorymanagementwebapi-hcbrgef9g9e6hnh5.canadacentral-01.azurewebsites.net/api-docs//api",
+      "url": "https://inventorymanagementwebapi-hcbrgef9g9e6hnh5.canadacentral-01.azurewebsites.net/api-docs/api",
       "description": "Cloud server"
+    },
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Dev server"
     }
   ],
   "paths": {
