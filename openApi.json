@@ -8,8 +8,8 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000/api",
-      "description": "Local development server"
+      "url": "Test123https://inventorymanagementwebapi-hcbrgef9g9e6hnh5.canadacentral-01.azurewebsites.net/api",
+      "description": "cloud server"
     }
   ],
   "paths": {
