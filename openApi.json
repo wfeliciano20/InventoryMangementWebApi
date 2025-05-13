@@ -1,0 +1,492 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "InventoryManagementAPI",
+    "description": "API for managing user-specific inventory items, including user registration and login, secured with JWT.",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "summary": "Register a new user",
+        "description": "Creates a new user account and returns a JWT upon successful registration.",
+        "operationId": "registerUser",
+        "tags": ["User Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "password"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "testUser"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "test@test.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "Test123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User registered successfully, token returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODFkNj..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "All fields required or Error Creating User",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "Login an existing user",
+        "description": "Authenticates a user and returns a JWT.",
+        "operationId": "loginUser",
+        "tags": ["User Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "test@test.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "Test123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful, token returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODFkNj..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "All fields required",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed (Invalid credentials or other info)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "404": {
+            "description": "Error in Authentication Process (e.g., user not found during passport strategy)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventory-items": {
+      "get": {
+        "summary": "Get all inventory items for the authenticated user",
+        "description": "Retrieves a list of inventory items belonging to the user making the request. Requires Bearer token.",
+        "operationId": "getUserInventoryItems",
+        "tags": ["Inventory"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful response with user's inventory items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/InventoryItem" }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized (token missing or invalid)",
+            "content": {
+              "application/json": {
+                "schema": { "type": "string", "example": "Not authorized" }
+              }
+            }
+          },
+          "404": {
+            "description": "Database error (e.g. query failed to execute, though 500 might be more apt)",
+            "content": {
+              "application/json": {
+                "schema": { "type": "string", "example": "Database error" }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": { "type": "string", "example": "Server error" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new inventory item",
+        "description": "Adds a new item to the authenticated user's inventory. Requires Bearer token.",
+        "operationId": "createInventoryItem",
+        "tags": ["Inventory"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "quantity"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Pen"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 4
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Item created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InventoryItem" }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Request (missing fields) or Database error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Invalid Request / Database error"
+                }
+              }
+            }
+          },
+          "401": { "description": "Not authorized" },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": { "type": "string", "example": "Server error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventory-items/{itemId}": {
+      "parameters": [
+        {
+          "name": "itemId",
+          "in": "path",
+          "required": true,
+          "description": "ID of the inventory item to operate on",
+          "schema": {
+            "type": "string",
+            "example": "681d5d792995cbed7d7cac73"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get a specific inventory item by ID",
+        "description": "Retrieves a specific inventory item if it belongs to the authenticated user. Requires Bearer token.",
+        "operationId": "getInventoryItemById",
+        "tags": ["Inventory"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InventoryItem" }
+              }
+            }
+          },
+          "400": { "description": "Invalid Request" },
+          "401": { "description": "Not authorized" },
+          "403": {
+            "description": "Forbidden (Unauthorized access to item - item belongs to another user)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Unauthorized access to item"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item not found",
+            "content": {
+              "application/json": {
+                "schema": { "type": "string", "example": "Item not found" }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": { "type": "string", "example": "Server error" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an existing inventory item",
+        "description": "Modifies an existing inventory item if it belongs to the authenticated user. Requires Bearer token.",
+        "operationId": "updateInventoryItem",
+        "tags": ["Inventory"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "quantity"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Pen"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Item updated successfully (Note: Your code returns 201, typically PUT returns 200 for update)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InventoryItem" }
+              }
+            }
+          },
+          "400": { "description": "Invalid Request (missing fields)" },
+          "401": { "description": "Not authorized" },
+          "403": {
+            "description": "Forbidden (Unauthorized access to item)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Unauthorized access to item"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item not found",
+            "content": {
+              "application/json": {
+                "schema": { "type": "string", "example": "Item not found" }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": { "type": "string", "example": "Server error" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an inventory item",
+        "description": "Removes an inventory item if it belongs to the authenticated user. Requires Bearer token.",
+        "operationId": "deleteInventoryItem",
+        "tags": ["Inventory"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "204": {
+            "description": "Item deleted successfully (No content)"
+          },
+
+          "400": { "description": "Invalid Request" },
+          "401": { "description": "Not authorized" },
+          "403": {
+            "description": "Forbidden (Unauthorized access to item)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "Unauthorized access to item"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item not found",
+            "content": {
+              "application/json": {
+                "schema": { "type": "string", "example": "Item not found" }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": { "type": "string", "example": "Server error" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "InventoryItem": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Unique identifier for the inventory item (MongoDB ObjectId)",
+            "example": "681d5d792995cbed7d7cac73"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the inventory item",
+            "example": "Pen"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Quantity of the inventory item",
+            "example": 10
+          },
+          "userId": {
+            "type": "string",
+            "description": "Identifier of the user who owns this item",
+            "example": "681d5c852995cbed7d7cac6f"
+          },
+          "__v": {
+            "type": "integer",
+            "description": "Version key by Mongoose",
+            "example": 0
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message detailing the issue"
+          },
+          "message": {
+            "type": "string",
+            "description": "General error message (sometimes used by passport)"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\""
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "User Authentication",
+      "description": "Endpoints for user registration and login"
+    },
+    {
+      "name": "Inventory",
+      "description": "Endpoints for managing inventory items"
+    }
+  ]
+}

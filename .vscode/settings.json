@@ -1,0 +1,4 @@
+{
+  "appService.defaultWebAppToDeploy": "undefined/subscriptions/75c175ac-32d5-4181-929a-be242b1c3de1/resourceGroups/appsvc_linux_canadacentral_basic/providers/Microsoft.Web/sites/InventoryManagementWebApi",
+  "appService.deploySubpath": "."
+}
