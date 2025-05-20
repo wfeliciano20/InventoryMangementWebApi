@@ -1,3 +1,4 @@
+//Some of the code in this file was reused from CS465 Full Stack Guide Module 7
 const express = require("express");
 const jwt = require("jsonwebtoken"); // Enable JSON Web Tokens
 const router = express.Router();
@@ -23,8 +24,6 @@ function authenticateJWT(req, res, next) {
     return res.sendStatus(401);
   }
 
-  // console.log(process.env.JWT_SECRET);
-  // console.log(jwt.decode(token));
   const verified = jwt.verify(
     token,
     process.env.JWT_SECRET,
@@ -42,6 +41,7 @@ const authController = require("../controllers/authentication");
 router.route("/register").post(authController.register);
 router.route("/login").post(authController.login);
 
+// Code not from CS465
 const inventoryController = require("../controllers/inventory");
 router
   .route("/inventory-items")

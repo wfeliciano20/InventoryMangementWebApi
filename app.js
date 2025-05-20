@@ -1,3 +1,4 @@
+// Some of the code in this file was reused from CS465 Full Stack Guide Module7
 require("dotenv").config();
 var createError = require("http-errors");
 var express = require("express");
@@ -18,7 +19,6 @@ var app = express();
 require("./models/db");
 
 // Enable Cors for Web Portal
-// Enable CORS
 app.use("/api", (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:4200");
   res.header(
@@ -35,9 +35,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(passport.initialize());
-
+//  Code not from CS465
 app.use("/api", apiRouter);
 
+//  Code not from CS465
 // Swagger Documentation
 const swaggerDocumentationContent = JSON.parse(
   fs.readFileSync("./openApi.json", "utf-8")

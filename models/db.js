@@ -1,3 +1,4 @@
+// The code in this file was reused from CS465 Full Stack Guide Module5
 const mongoose = require("mongoose");
 const dbURI = process.env.MONGODB_URI;
 const readLine = require("readline");

@@ -1,3 +1,4 @@
+// The code in this file was reused from CS465 Full Stack Guide Module7
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");

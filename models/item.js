@@ -7,6 +7,7 @@ const itemSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
 });
 
+// create the mongoose model
 const InventoryItem = mongoose.model("items", itemSchema);
 
 module.exports = InventoryItem;

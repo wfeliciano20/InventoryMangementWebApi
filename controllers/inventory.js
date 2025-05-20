@@ -13,10 +13,6 @@ const inventoryItems = async (req, res) => {
     const query = await Model.find({ userId: req.auth.userId }) // Filter by user ID
       .exec();
 
-    // uncomment the following line to show results of query
-    // on the console
-    // console.log(q);
-
     if (!query) {
       // Database returned no data
       return res.status(404).json("Database error");
@@ -113,10 +109,6 @@ const itemsUpdateItem = async (req, res) => {
       },
       { new: true } // This option returns the updated document
     ).exec();
-
-    // Uncomment the following line to show results of operation;
-    // on the console
-    // console.log(q);
 
     if (!query && itemExists) {
       // Database returned no data

@@ -1,3 +1,4 @@
+// The code in this file was reused from CS465 Full Stack Guide Module5
 const User = require("../models/user");
 const passport = require("passport");
 
