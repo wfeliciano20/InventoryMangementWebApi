@@ -29,6 +29,16 @@ Explore the API endpoints using Swagger UI:
 
 1. Clone the repository.
 2. Create a .env file
-3. Configure the JWT_SECTRET env variable with a random string
-4. Configure the MONGODB_URI env variable with a MongoDB atlas cluster uri
-5. Run the API locally or use the deployed Azure url.
+3. Configure the JWT_SECRET env variable with a random string
+4. Configure the JWT_REFRESH_SECRET env variable with a random string
+5. Configure the MONGODB_URI env variable with a MongoDB atlas cluster uri
+6. Run the API locally or use the deployed Azure url.
+
+### If you make any changes be sure to do the following to update the documentation
+
+1. Open the Postman Collection in Postman after you add or modify endpoints
+2. Create or modify the endpoints in Postman Collection
+3. Export the Postman Collection
+4. Go to https://postmantoopenapiconverter.netlify.app/ and paste the postman json
+5. Get the open api json and paste it on openApi.json file
+6. Run the application with npm start and documentation will be updated.

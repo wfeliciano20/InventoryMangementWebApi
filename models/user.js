@@ -23,7 +23,9 @@ userSchema.methods.setPassword = function (password) {
   if (!password || typeof password !== "string") {
     throw new Error("Password is required and must be a string");
   }
+  // generate the unique salt to hash password
   this.salt = crypto.randomBytes(16).toString("hex");
+  // Generate hash the password
   this.hash = crypto
     .pbkdf2Sync(password, this.salt, 1000, 64, "sha512")
     .toString("hex");
@@ -49,6 +51,23 @@ userSchema.methods.generateJWT = function () {
     process.env.JWT_SECRET, //SECRET stored in .env file
     { expiresIn: "1h" }
   ); //Token expires an hour from creation
+};
+
+// the next method is not from CS465 FullStack Guide
+// Method to generate refresh token
+userSchema.methods.generateRefreshToken = function () {
+  const refreshToken = jwt.sign(
+    {
+      userId: this._id,
+    },
+    process.env.JWT_REFRESH_SECRET, // Use a jwt refresh secret for refresh tokens
+    { expiresIn: "7d" } // Longer expiration time (7 days)
+  );
+
+  this.refreshToken = refreshToken;
+  this.refreshTokenExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+
+  return refreshToken;
 };
 
 const User = mongoose.model("users", userSchema);
