@@ -20,7 +20,11 @@ require("./models/db");
 
 // Enable Cors for Web Portal
 app.use("/api", (req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.header(
+    "Access-Control-Allow-Origin",
+    "http://localhost:5173",
+    "https://simpleinventorywebclient-guhyewfkd4b6hha5.canadacentral-01.azurewebsites.net/"
+  );
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-Width, Content-Type, Accept, Authorization"
