@@ -91,7 +91,12 @@ const itemsAddItem = async (req, res) => {
 // Regardless of outcome, response must include HTML status code
 // and JSON message to the requesting client
 const itemsUpdateItem = async (req, res) => {
-  if (!req.body.name || !req.body.quantity || !req.auth.userId) {
+  if (
+    !req.body.name ||
+    req.body.quantity === undefined ||
+    req.body.quantity === null ||
+    !req.auth.userId
+  ) {
     return res.status(400).json("Invalid Request");
   }
   try {
